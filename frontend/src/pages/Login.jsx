@@ -6,15 +6,53 @@ import { useNotifications } from "../NotificationContext"; // Import useNotifica
 export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
   const { addNotification } = useNotifications(); // Use the notification context
 
+  // Password validation function
+  const validatePassword = (password) => {
+    const minLength = password.length >= 6;
+    const hasAlphabet = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+    if (!minLength) return "Password must be at least 6 characters long";
+    if (!hasAlphabet) return "Password must contain at least one letter";
+    if (!hasNumber) return "Password must contain at least one number";
+    if (!hasSpecialChar) return "Password must contain at least one special character";
+    
+    return "";
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Validate password
+    const validationError = validatePassword(password);
+    if (validationError) {
+      setPasswordError(validationError);
+      return;
+    }
+    
+    // Clear any previous errors
+    setPasswordError("");
+    
     // 🔑 Backend Auth will replace this
     setUser({ name: "Himanshu", email });
     addNotification({ id: Date.now(), message: "You have successfully logged in!", type: "system", read: false, time: new Date().toLocaleTimeString() }); // Add notification
     navigate("/");
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    
+    // Clear error when user starts typing
+    if (passwordError) {
+      setPasswordError("");
+    }
   };
 
   return (
@@ -55,14 +93,40 @@ export default function Login({ setUser }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 dark:bg-gray-800 dark:text-white placeholder-gray-400"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Enter your password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className={`w-full px-4 py-2 mt-1 rounded-lg border focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 dark:bg-gray-800 dark:text-white placeholder-gray-400 pr-12 ${
+                  passwordError 
+                    ? "border-red-500 focus:ring-red-500" 
+                    : "border-gray-300 dark:border-gray-600"
+                }`}
+                value={password}
+                onChange={handlePasswordChange}
+                required
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                  </svg>
+                ) : (
+                  <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            {passwordError && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{passwordError}</p>
+            )}
+           
           </div>
 
           <motion.button
