@@ -1,0 +1,15 @@
+@import '@fontsource/inter';
+@import '@fontsource/merriweather';
+@import '@fontsource/fira-code';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-sans bg-light dark:bg-dark text-gray-900 dark:text-gray-100 transition-colors duration-300;
+}
+
+.container {
+  @apply max-w-6xl mx-auto px-4;
+}
