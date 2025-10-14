@@ -24,10 +24,10 @@ export default function App() {
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       <Navbar user={user} />
       <Routes>
-        {/* Before login → shows intro; After login → redirect to profile */}
+        {/* Home page - accessible to all users */}
         <Route
           path="/"
-          element={user ? <Navigate to="/profile" replace /> : <Home />}
+          element={<Home />}
         />
 
         {/* Protected routes (need login) */}

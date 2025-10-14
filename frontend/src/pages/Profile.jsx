@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Settings, LogOut, Trash2, Key } from "lucide-react"; // Import Key icon
+import { User, Settings, LogOut, Trash2, Activity, Award, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Profile({ user, setUser }) {
@@ -73,10 +73,10 @@ export default function Profile({ user, setUser }) {
             <Settings className="w-5 h-5 mr-3" /> Account Settings
           </button>
           <button
-            onClick={() => setActiveTab("apikeys")}
-            className={tabButtonClass("apikeys")}
+            onClick={() => setActiveTab("analytics")}
+            className={tabButtonClass("analytics")}
           >
-            <Key className="w-5 h-5 mr-3" /> API Keys
+            <Activity className="w-5 h-5 mr-3" /> Analytics
           </button>
         </nav>
 
@@ -167,9 +167,9 @@ export default function Profile({ user, setUser }) {
             </div>
           </motion.div>
         )}
-        {activeTab === "apikeys" && (
+        {activeTab === "analytics" && (
           <motion.div
-            key="apikeys-tab"
+            key="analytics-tab"
             initial={{ opacity: 0, y: 10, boxShadow: "0 0px 0px 0px rgba(0, 0, 0, 0)" }}
             animate={{ opacity: 1, y: 0, boxShadow: "0 20px 40px 0px rgba(0, 0, 0, 0.3)" }}
             transition={{
@@ -180,45 +180,76 @@ export default function Profile({ user, setUser }) {
             className="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 md:p-8"
           >
             <h2 className="text-3xl font-bold text-primary-700 dark:text-primary-200 mb-4">
-              API Key Management
+              Your Analytics
             </h2>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-              Manage your API keys for integrating with external services.
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
+              Track your progress and usage across all our AI-powered tools.
             </p>
-            <div className="space-y-4">
-              {/* Existing API Keys Section */}
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Your API Keys</h3>
-              {/* Placeholder for API key list */}
-              <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg flex items-center justify-between">
-                <span className="font-mono text-gray-800 dark:text-gray-200">********************abcde12345</span>
-                <div className="flex items-center space-x-2">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 bg-secondary-500 text-white rounded-lg text-sm hover:bg-secondary-600 transition"
-                  >
-                    Copy
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition"
-                  >
-                    Revoke
-                  </motion.button>
+            
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-blue-100 text-sm">Resume Matches</p>
+                    <p className="text-3xl font-bold">12</p>
+                  </div>
+                  <TrendingUp className="w-8 h-8 text-blue-200" />
+                </div>
+              </motion.div>
+              
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-green-100 text-sm">Code Reviews</p>
+                    <p className="text-3xl font-bold">8</p>
+                  </div>
+                  <Award className="w-8 h-8 text-green-200" />
+                </div>
+              </motion.div>
+              
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-purple-100 text-sm">AI Interactions</p>
+                    <p className="text-3xl font-bold">45</p>
+                  </div>
+                  <Activity className="w-8 h-8 text-purple-200" />
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Recent Activity */}
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+                Recent Activity
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3 p-3 bg-white dark:bg-gray-600 rounded-lg">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Resume analyzed for Software Engineer position</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">2 hours ago</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-white dark:bg-gray-600 rounded-lg">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Code review completed for React component</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">1 day ago</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-white dark:bg-gray-600 rounded-lg">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">AI prompt generated for marketing copy</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">3 days ago</span>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">Remember to keep your API keys secure and never share them publicly.</p>
-
-              {/* Generate New API Key Section */}
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mt-8 mb-2">Generate New API Key</h3>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-6 py-3 bg-primary-600 text-white rounded-lg shadow-md hover:bg-primary-700 transition-all duration-300 ease-in-out font-medium"
-              >
-                Generate New Key
-              </motion.button>
             </div>
           </motion.div>
         )}
