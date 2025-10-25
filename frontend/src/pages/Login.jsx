@@ -40,7 +40,9 @@ export default function Login({ setUser }) {
     setPasswordError("");
     
     // 🔑 Backend Auth will replace this
-    setUser({ name: "Himanshu", email });
+    const loggedInUser = { name: "Himanshu", email }; // Simulate user data
+    setUser(loggedInUser);
+    localStorage.setItem('user', JSON.stringify(loggedInUser)); // Persist user to localStorage
     addNotification({ id: Date.now(), message: "You have successfully logged in!", type: "system", read: false, time: new Date().toLocaleTimeString() }); // Add notification
     navigate("/");
   };

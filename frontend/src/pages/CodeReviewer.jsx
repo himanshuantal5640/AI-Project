@@ -34,10 +34,10 @@ export default function CodeReviewer() {
   const fileInputRef = useRef(null);
 
   const reviewTypes = [
-    { id: "comprehensive", label: "Comprehensive", description: "Full code review with all checks", icon: Shield },
-    { id: "security", label: "Security Focus", description: "Security vulnerabilities and best practices", icon: Bug },
-    { id: "performance", label: "Performance", description: "Performance optimization suggestions", icon: Zap },
-    { id: "style", label: "Code Style", description: "Code formatting and style guidelines", icon: Star }
+    { id: "comprehensive", label: "Comprehensive", description: "Full code review with all checks", icon: Shield, prompt: "Perform a comprehensive code review focusing on correctness, efficiency, readability, maintainability, and adherence to best practices. Provide a detailed report with specific line-by-line feedback, overall suggestions, and a summary of the code's quality." },
+    { id: "security", label: "Security Focus", description: "Security vulnerabilities and best practices", icon: Bug, prompt: "Conduct a security-focused code review. Identify potential vulnerabilities like injection flaws, broken authentication, sensitive data exposure, and insecure deserialization. Suggest remediations and security best practices to harden the code." },
+    { id: "performance", label: "Performance", description: "Performance optimization suggestions", icon: Zap, prompt: "Review the code for performance bottlenecks. Identify areas where execution time or resource consumption can be reduced. Suggest specific optimizations, algorithmic improvements, and efficient data structures." },
+    { id: "style", label: "Code Style", description: "Code formatting and style guidelines", icon: Star, prompt: "Analyze the code for adherence to established style guides (e.g., Airbnb, Google). Provide feedback on formatting, naming conventions, consistency, and overall readability. Suggest automatic formatting tools if applicable." }
   ];
 
   const handleFileUpload = (event) => {
@@ -57,8 +57,13 @@ export default function CodeReviewer() {
     if (!codeContent.trim()) return;
     
     setLoading(true);
-    
-    // Simulate review process
+
+    // Get the prompt for the selected review type
+    const selectedReviewType = reviewTypes.find(type => type.id === reviewType);
+    const prompt = selectedReviewType ? selectedReviewType.prompt : "Perform a general code review.";
+
+    // In a real application, you would send `codeContent` and `prompt` to your AI backend
+    // For now, we'll simulate a review process
     await new Promise(resolve => setTimeout(resolve, 3000));
     
     setReviewResult({
@@ -364,7 +369,7 @@ export default function CodeReviewer() {
             whileTap={{ scale: 0.98 }}
                       onClick={handleReview}
                       disabled={!codeContent.trim() || loading}
-                      className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-4 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-gradient-to-r from-primary-600 to-blue-600 text-white py-4 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? (
                         <div className="flex items-center justify-center space-x-2">
@@ -391,14 +396,14 @@ export default function CodeReviewer() {
                   >
                     {/* Overall Score */}
                     <div className="text-center">
-                      <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl p-8 text-white mb-6">
-                        <div className="text-6xl font-bold mb-2">
+                      <div className="bg-gradient-to-r from-primary-500 to-blue-600 rounded-2xl p-8 text-white mb-6 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                        <div className="text-6xl font-extrabold mb-2">
                           {reviewResult.overallScore}%
                         </div>
-                        <p className="text-xl">Overall Code Quality</p>
-                        <div className="w-full bg-white/20 rounded-full h-3 mt-4">
+                        <p className="text-xl font-medium">Overall Code Quality</p>
+                        <div className="w-full bg-white/30 rounded-full h-3 mt-4">
                           <div 
-                            className="bg-white rounded-full h-3 transition-all duration-1000"
+                            className="bg-white rounded-full h-3 transition-all duration-1000 ease-out"
                             style={{ width: `${reviewResult.overallScore}%` }}
                           />
                         </div>
@@ -407,66 +412,59 @@ export default function CodeReviewer() {
 
                     {/* Metrics Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-center border border-blue-200 dark:border-blue-800">
-                        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-center border border-blue-200 dark:border-blue-800 transition-all duration-300 hover:shadow-lg">
+                        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
                           {reviewResult.metrics.complexity}
                         </div>
-                        <div className="text-sm text-blue-700 dark:text-blue-300">Complexity</div>
+                        <div className="text-sm text-blue-700 dark:text-blue-300 font-medium">Complexity</div>
                       </div>
-                      <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 text-center border border-green-200 dark:border-green-800">
-                        <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                      <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 text-center border border-green-200 dark:border-green-800 transition-all duration-300 hover:shadow-lg">
+                        <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
                           {reviewResult.metrics.maintainability}%
                         </div>
-                        <div className="text-sm text-green-700 dark:text-green-300">Maintainability</div>
+                        <div className="text-sm text-green-700 dark:text-green-300 font-medium">Maintainability</div>
                       </div>
-                      <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 text-center border border-purple-200 dark:border-purple-800">
-                        <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                      <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 text-center border border-purple-200 dark:border-purple-800 transition-all duration-300 hover:shadow-lg">
+                        <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                           {reviewResult.metrics.testability}%
                         </div>
-                        <div className="text-sm text-purple-700 dark:text-purple-300">Testability</div>
+                        <div className="text-sm text-purple-700 dark:text-purple-300 font-medium">Testability</div>
                       </div>
-                      <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 text-center border border-orange-200 dark:border-orange-800">
-                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                      <div className="bg-accent-50 dark:bg-accent-900/20 rounded-xl p-4 text-center border border-accent-200 dark:border-accent-800 transition-all duration-300 hover:shadow-lg">
+                        <div className="text-2xl font-bold text-accent-600 dark:text-accent-400 mb-1">
                           {reviewResult.metrics.readability}%
                         </div>
-                        <div className="text-sm text-orange-700 dark:text-orange-300">Readability</div>
+                        <div className="text-sm text-accent-700 dark:text-accent-300 font-medium">Readability</div>
                       </div>
                     </div>
 
                     {/* Issues List */}
-                    <div className="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
-                      <div className="p-6 border-b border-gray-200 dark:border-gray-600">
-                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                          Issues Found ({reviewResult.issues.length})
-                        </h4>
+                    <div className="bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 divide-y divide-gray-200 dark:divide-gray-600 shadow-lg">
+                      <div className="p-6">
+                        <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Issues Found</h4>
+                        <p className="text-gray-600 dark:text-gray-400">Total issues: {reviewResult.issues.length}</p>
                       </div>
-                      <div className="divide-y divide-gray-200 dark:divide-gray-600">
+                      <div>
                         {reviewResult.issues.map((issue, index) => {
                           const SeverityIcon = getSeverityIcon(issue.severity);
                           return (
-                            <div key={index} className="p-6">
+                            <div key={index} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                               <div className="flex items-start space-x-4">
-                                <div className={`p-2 rounded-lg ${getSeverityColor(issue.severity)}`}>
-                                  <SeverityIcon className="w-5 h-5" />
+                                <div className={`p-3 rounded-full ${getSeverityColor(issue.severity)} flex-shrink-0`}>
+                                  <SeverityIcon className="w-6 h-6" />
                                 </div>
                                 <div className="flex-1">
-                                  <div className="flex items-center space-x-2 mb-2">
-                                    <span className="font-medium text-gray-900 dark:text-white">
-                                      Line {issue.line}
-                                    </span>
-                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                      issue.severity === "high" ? "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300" :
-                                      issue.severity === "medium" ? "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300" :
-                                      "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
-                                    }`}>
+                                  <div className="flex items-center space-x-3 mb-2">
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase ${issue.severity === "high" ? "bg-red-200 text-red-800 dark:bg-red-900/20 dark:text-red-300" : issue.severity === "medium" ? "bg-orange-200 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300" : "bg-blue-200 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"}`}>
                                       {issue.severity}
                                     </span>
+                                    <span className="font-mono text-sm text-gray-700 dark:text-gray-300">Line {issue.line}</span>
                                   </div>
-                                  <p className="text-gray-700 dark:text-gray-300 mb-2">
+                                  <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                     {issue.message}
                                   </p>
-                                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    <strong>Suggestion:</strong> {issue.suggestion}
+                                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                    <strong className="font-semibold">Suggestion:</strong> {issue.suggestion}
                                   </p>
                                 </div>
                               </div>
@@ -477,26 +475,22 @@ export default function CodeReviewer() {
                     </div>
 
                     {/* Suggestions */}
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
-                      <h4 className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-4">
-                        General Suggestions
-                      </h4>
-                      <ul className="space-y-3">
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800 shadow-lg">
+                      <h4 className="text-2xl font-bold text-purple-800 dark:text-purple-200 mb-4">General Suggestions</h4>
+                      <ul className="space-y-4">
                         {reviewResult.suggestions.map((suggestion, index) => (
                           <li key={index} className="flex items-start space-x-3 text-purple-700 dark:text-purple-300">
-                            <Star className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm">{suggestion}</span>
+                            <Star className="w-6 h-6 mt-0.5 flex-shrink-0 text-purple-500" />
+                            <span className="text-base leading-relaxed">{suggestion}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
 
                     {/* Summary */}
-                    <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                      <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                        Review Summary
-                      </h4>
-                      <p className="text-gray-700 dark:text-gray-300">
+                    <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 shadow-lg">
+                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Review Summary</h4>
+                      <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                         {reviewResult.summary}
                       </p>
                     </div>
@@ -506,7 +500,7 @@ export default function CodeReviewer() {
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex-1 bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="flex-1 bg-gradient-to-r from-primary-600 to-blue-600 text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <div className="flex items-center justify-center space-x-2">
                           <Download className="w-5 h-5" />
@@ -534,7 +528,7 @@ export default function CodeReviewer() {
                           setReviewResult(null);
                           setActiveTab("upload");
                         }}
-                        className="flex-1 bg-purple-600 text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="flex-1 bg-accent-600 text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <div className="flex items-center justify-center space-x-2">
                           <Upload className="w-5 h-5" />

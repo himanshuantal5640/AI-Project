@@ -29,7 +29,6 @@ import {
 } from "lucide-react";
 
 export default function PromptGenerator() {
-  const [selectedTask, setSelectedTask] = useState("summarize");
   const [inputText, setInputText] = useState("");
   const [generatedPrompt, setGeneratedPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,57 +39,6 @@ export default function PromptGenerator() {
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [currentSession, setCurrentSession] = useState([]);
-
-  const taskOptions = [
-    { 
-      value: "summarize", 
-      label: "Text Summarization", 
-      description: "Create concise summaries of long content",
-      icon: FileText, 
-      color: "blue",
-      placeholder: "Paste the text you want to summarize..." 
-    },
-    { 
-      value: "marketing", 
-      label: "Marketing Copy", 
-      description: "Generate compelling marketing content",
-      icon: Target, 
-      color: "green",
-      placeholder: "Describe your product or service..." 
-    },
-    { 
-      value: "code", 
-      label: "Code Generation", 
-      description: "Generate code snippets and functions",
-      icon: Code, 
-      color: "purple",
-      placeholder: "Describe the function you need (e.g., 'a Python function to reverse a string')..." 
-    },
-    { 
-      value: "idea", 
-      label: "Brainstorming", 
-      description: "Generate creative ideas and concepts",
-      icon: Lightbulb, 
-      color: "orange",
-      placeholder: "What topic do you want to brainstorm about?" 
-    },
-    { 
-      value: "writing", 
-      label: "Content Writing", 
-      description: "Create articles, blogs, and written content",
-      icon: BookOpen, 
-      color: "pink",
-      placeholder: "What topic do you want to write about?" 
-    },
-    { 
-      value: "analysis", 
-      label: "Data Analysis", 
-      description: "Analyze data and generate insights",
-      icon: TrendingUp, 
-      color: "indigo",
-      placeholder: "Describe the data you want to analyze..." 
-    }
-  ];
 
   const toneOptions = [
     { value: "professional", label: "Professional", icon: Star },
@@ -125,7 +73,7 @@ export default function PromptGenerator() {
     if (session) {
       setCurrentSession(session.prompts);
       setCurrentSessionId(sessionId);
-      setSelectedTask(session.task);
+      // setSelectedTask(session.task); // This line is removed
       setTone(session.tone);
       setCustomInstructions(session.customInstructions || "");
     }
@@ -138,7 +86,7 @@ export default function PromptGenerator() {
     const newSession = {
       id: currentSessionId || Date.now(),
       title: sessionTitle,
-      task: selectedTask,
+      // task: selectedTask, // This line is removed
       tone: tone,
       customInstructions: customInstructions,
       prompts: [...currentSession],
@@ -172,34 +120,36 @@ export default function PromptGenerator() {
     setGeneratedPrompt("");
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const selectedTaskInfo = taskOptions.find(opt => opt.value === selectedTask);
+    // const selectedTaskInfo = taskOptions.find(opt => opt.value === selectedTask); // This line is removed
     const toneInfo = toneOptions.find(t => t.value === tone);
 
     let prompt = "";
     const baseInstruction = customInstructions ? `\n\nAdditional instructions: ${customInstructions}` : '';
     
-    switch (selectedTask) {
-      case "summarize":
-        prompt = `Please provide a comprehensive summary of the following text. Make it clear, concise, and well-structured. Focus on the main points and key insights.${baseInstruction}\n\nText to summarize: "${inputText}"`;
-        break;
-      case "marketing":
-        prompt = `Create compelling marketing copy for the following product/service. Use persuasive language, highlight benefits, and include a call-to-action. Write in a ${tone} tone.${baseInstruction}\n\nProduct/Service: "${inputText}"`;
-        break;
-      case "code":
-        prompt = `Write clean, well-documented code for the following requirement. Include comments, error handling, and best practices. Use appropriate programming patterns.${baseInstruction}\n\nRequirement: "${inputText}"`;
-        break;
-      case "idea":
-        prompt = `Generate creative and innovative ideas for the following topic. Think outside the box and provide practical, actionable suggestions.${baseInstruction}\n\nTopic: "${inputText}"`;
-        break;
-      case "writing":
-        prompt = `Write engaging content about the following topic. Structure it well with an introduction, main points, and conclusion. Use a ${tone} tone.${baseInstruction}\n\nTopic: "${inputText}"`;
-        break;
-      case "analysis":
-        prompt = `Analyze the following data and provide insights, trends, and recommendations. Include statistical observations and actionable conclusions.${baseInstruction}\n\nData: "${inputText}"`;
-        break;
-      default:
-        prompt = `Generate a comprehensive response for the following request. Be detailed, accurate, and helpful.${baseInstruction}\n\nRequest: "${inputText}"`;
-    }
+    // switch (selectedTask) { // This line is removed
+    //   case "summarize":
+    //     prompt = `Please provide a comprehensive summary of the following text. Make it clear, concise, and well-structured. Focus on the main points and key insights.${baseInstruction}\n\nText to summarize: "${inputText}"`;
+    //     break;
+    //   case "marketing":
+    //     prompt = `Create compelling marketing copy for the following product/service. Use persuasive language, highlight benefits, and include a call-to-action. Write in a ${tone} tone.${baseInstruction}\n\nProduct/Service: "${inputText}"`;
+    //     break;
+    //   case "code":
+    //     prompt = `Write clean, well-documented code for the following requirement. Include comments, error handling, and best practices. Use appropriate programming patterns.${baseInstruction}\n\nRequirement: "${inputText}"`;
+    //     break;
+    //   case "idea":
+    //     prompt = `Generate creative and innovative ideas for the following topic. Think outside the box and provide practical, actionable suggestions.${baseInstruction}\n\nTopic: "${inputText}"`;
+    //     break;
+    //   case "writing":
+    //     prompt = `Write engaging content about the following topic. Structure it well with an introduction, main points, and conclusion. Use a ${tone} tone.${baseInstruction}\n\nTopic: "${inputText}"`;
+    //     break;
+    //   case "analysis":
+    //     prompt = `Analyze the following data and provide insights, trends, and recommendations. Include statistical observations and actionable conclusions.${baseInstruction}\n\nData: "${inputText}"`;
+    //     break;
+    //   default:
+    //     prompt = `Generate a comprehensive response for the following request. Be detailed, accurate, and helpful.${baseInstruction}\n\nRequest: "${inputText}"`;
+    // }
+    
+    prompt = `Generate a comprehensive response for the following request. Be detailed, accurate, and helpful.${baseInstruction}\n\nRequest: "${inputText}"`;
     
     setGeneratedPrompt(prompt);
     
@@ -208,7 +158,7 @@ export default function PromptGenerator() {
       id: Date.now(),
       input: inputText,
       prompt: prompt,
-      task: selectedTask,
+      // task: selectedTask, // This line is removed
       tone: tone,
       timestamp: new Date()
     };
@@ -223,7 +173,7 @@ export default function PromptGenerator() {
       const newSession = {
         id: currentSessionId || Date.now(),
         title: sessionTitle,
-        task: selectedTask,
+        // task: selectedTask, // This line is removed
         tone: tone,
         customInstructions: customInstructions,
         prompts: updatedSession,
@@ -251,7 +201,7 @@ export default function PromptGenerator() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `prompt-${selectedTask}-${Date.now()}.txt`;
+    a.download = `prompt-${Date.now()}.txt`; // Changed filename to be more generic
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -260,7 +210,7 @@ export default function PromptGenerator() {
   const loadPromptFromHistory = (prompt) => {
     setGeneratedPrompt(prompt.prompt);
     setInputText(prompt.input);
-    setSelectedTask(prompt.task);
+    // setSelectedTask(prompt.task); // This line is removed
     setTone(prompt.tone);
   };
 
@@ -321,14 +271,16 @@ export default function PromptGenerator() {
                         {session.title}
                       </span>
                       <span className={`px-2 py-1 text-xs rounded-full ${
-                        session.task === 'summarize' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
-                        session.task === 'marketing' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
-                        session.task === 'code' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300' :
-                        session.task === 'idea' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300' :
-                        session.task === 'writing' ? 'bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-300' :
+                        // session.task === 'summarize' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' : // This line is removed
+                        // session.task === 'marketing' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' : // This line is removed
+                        // session.task === 'code' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300' : // This line is removed
+                        // session.task === 'idea' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300' : // This line is removed
+                        // session.task === 'writing' ? 'bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-300' : // This line is removed
+                        // 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300' // This line is removed
                         'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300'
                       }`}>
-                        {taskOptions.find(t => t.value === session.task)?.label}
+                        {/* {taskOptions.find(t => t.value === session.task)?.label} // This line is removed */}
+                        New Session
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -359,182 +311,84 @@ export default function PromptGenerator() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 sticky top-0 z-10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowSidebar(!showSidebar)}
-                className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-                title={showSidebar ? "Hide session history" : "Show session history"}
-              >
-                {showSidebar ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-              </motion.button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-        AI Prompt Generator
-                </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Create powerful prompts for any AI task
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={copyToClipboard}
-                disabled={!generatedPrompt}
-                className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors disabled:opacity-50"
-                title="Copy prompt"
-              >
-                <Copy className="w-5 h-5" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={downloadPrompt}
-                disabled={!generatedPrompt}
-                className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors disabled:opacity-50"
-                title="Download prompt"
-              >
-                <Download className="w-5 h-5" />
-              </motion.button>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 flex">
-          {/* Left Panel - Settings */}
-          <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">
-            <div className="space-y-4">
-              {/* Task Selection */}
-              <div>
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
-                  Task Type
-                </h3>
-                <div className="space-y-1">
-                  {taskOptions.map((option) => {
-                    const Icon = option.icon;
-                    const isSelected = selectedTask === option.value;
-                    
-                    return (
-                      <motion.button
-                        key={option.value}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setSelectedTask(option.value)}
-                        className={`w-full p-2 rounded-lg border-2 transition-all duration-300 text-left ${
-                          isSelected 
-                            ? `border-${option.color}-500 bg-${option.color}-50 dark:bg-${option.color}-900/20` 
-                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className={`p-2 rounded-lg ${
-                            isSelected 
-                              ? `bg-${option.color}-500 text-white` 
-                              : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-                          }`}>
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <p className={`font-medium ${
-                              isSelected 
-                                ? `text-${option.color}-700 dark:text-${option.color}-300` 
-                                : "text-gray-700 dark:text-gray-300"
-                            }`}>
-                              {option.label}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {option.description}
-                            </p>
-                          </div>
-                        </div>
-                      </motion.button>
-                    );
-                  })}
+        <React.Fragment>
+          {/* Header */}
+          <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 sticky top-0 z-10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowSidebar(!showSidebar)}
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                  title={showSidebar ? "Hide session history" : "Show session history"}
+                >
+                  {showSidebar ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+                </motion.button>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          AI Prompt Generator
+                  </h1>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Create powerful prompts for any AI task
+                  </p>
                 </div>
               </div>
-
-              {/* Settings */}
-              <div>
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
-                  Settings
-                </h3>
-                <div className="space-y-3">
-        <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Tone
-          </label>
-          <select
-                      value={tone}
-                      onChange={(e) => setTone(e.target.value)}
-                      className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400"
-                    >
-                      {toneOptions.map((toneOption) => {
-                        const Icon = toneOption.icon;
-                        return (
-                          <option key={toneOption.value} value={toneOption.value}>
-                            {toneOption.label}
-              </option>
-                        );
-                      })}
-          </select>
-        </div>
-
-        <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Custom Instructions
-                    </label>
-                    <textarea
-                      value={customInstructions}
-                      onChange={(e) => setCustomInstructions(e.target.value)}
-                      placeholder="Add specific instructions..."
-                      className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 resize-none"
-                      rows="3"
-                    />
-                  </div>
-                </div>
+              <div className="flex items-center space-x-2">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={copyToClipboard}
+                  disabled={!generatedPrompt}
+                  className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors disabled:opacity-50"
+                  title="Copy prompt"
+                >
+                  <Copy className="w-5 h-5" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={downloadPrompt}
+                  disabled={!generatedPrompt}
+                  className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors disabled:opacity-50"
+                  title="Download prompt"
+                >
+                  <Download className="w-5 h-5" />
+                </motion.button>
               </div>
-
             </div>
           </div>
 
-          {/* Right Panel - Main Content */}
-          <div className="flex-1 flex flex-col">
-            {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="max-w-4xl mx-auto">
-                {/* Input Section */}
-                <div className="mb-8">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-                      <Wand2 className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                        {taskOptions.find(opt => opt.value === selectedTask)?.label}
-                      </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Generate a professional prompt for your AI task
-                      </p>
-                    </div>
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="max-w-4xl mx-auto">
+              {/* Input Section */}
+              <div className="mb-8">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                    <Wand2 className="w-6 h-6 text-white" />
                   </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      New Prompt
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Generate a professional prompt for your AI task
+                    </p>
+                  </div>
+                </div>
 
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">
-            Input Text:
-          </label>
-          <textarea
-                        className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 font-mono resize-y"
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">
+              Input Text:
+            </label>
+            <textarea
+                          className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 font-mono resize-y"
             rows="6"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder={taskOptions.find(opt => opt.value === selectedTask)?.placeholder || "Enter your text here..."}
+            placeholder="Enter your text here..."
                       />
         </div>
 
@@ -558,9 +412,8 @@ export default function PromptGenerator() {
                       )}
         </motion.button>
                   </div>
-                </div>
 
-                {/* Generated Prompt */}
+                  {/* Generated Prompt */}
         {generatedPrompt && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -641,7 +494,7 @@ export default function PromptGenerator() {
               </div>
             </div>
           </div>
-        </div>
+        </React.Fragment>
       </div>
     </div>
   );

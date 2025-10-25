@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FileText, Code, BookOpen, Clock, BarChart } from "lucide-react"; // Added Clock and BarChart icons
+import { FileText, Code, BookOpen, Clock, BarChart, Sparkles } from "lucide-react"; // Added Clock, BarChart and Sparkles icons
+import PromptGenerator from "./PromptGenerator";
 
 export default function Dashboard() {
   const features = [
@@ -25,6 +26,13 @@ export default function Dashboard() {
       icon: BookOpen,
       color: "from-accent-500 to-accent-700",
     },
+    {
+      title: "Prompt Generator",
+      description: "Generate creative and context-aware prompts for various tasks.",
+      link: "/promptgenerator",
+      icon: Sparkles,
+      color: "from-blue-500 to-blue-700",
+    },
   ];
 
   // Placeholder data for Activity Feed
@@ -32,6 +40,7 @@ export default function Dashboard() {
     { id: 1, type: "Resume Match", description: "Matched your resume with 'Senior Software Engineer' job.", time: "2 hours ago" },
     { id: 2, type: "Code Review", description: "Received feedback for 'feature-branch' code.", time: "Yesterday" },
     { id: 3, type: "Learning Assistant", description: "Asked a question about React Hooks.", time: "3 days ago" },
+    { id: 4, type: "Prompt Generation", description: "Generated a marketing prompt for a new product.", time: "1 hour ago" },
   ];
 
   // Placeholder data for Usage Statistics

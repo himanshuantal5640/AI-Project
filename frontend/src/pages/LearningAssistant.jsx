@@ -29,23 +29,12 @@ export default function LearningAssistant() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState("general");
   const [conversationMode, setConversationMode] = useState("chat");
   const [chatHistory, setChatHistory] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [editingChatTitle, setEditingChatTitle] = useState(null);
   const messagesEndRef = useRef(null);
-
-  const subjects = [
-    { id: "general", label: "General", icon: Brain, color: "blue" },
-    { id: "programming", label: "Programming", icon: Code, color: "green" },
-    { id: "mathematics", label: "Mathematics", icon: Calculator, color: "purple" },
-    { id: "science", label: "Science", icon: Globe, color: "orange" },
-    { id: "writing", label: "Writing", icon: FileText, color: "pink" },
-    { id: "business", label: "Business", icon: Lightbulb, color: "indigo" }
-  ];
-
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -79,7 +68,7 @@ export default function LearningAssistant() {
     if (chat) {
       setMessages(chat.messages);
       setCurrentChatId(chatId);
-      setSelectedSubject(chat.subject);
+      // setSelectedSubject(chat.subject); // This line is removed
     }
   };
 
@@ -90,7 +79,7 @@ export default function LearningAssistant() {
     const newChat = {
       id: currentChatId || Date.now(),
       title: chatTitle,
-      subject: selectedSubject,
+      subject: "general", // Default to general for now
       messages: [...messages],
       timestamp: new Date(),
       lastMessage: messages[messages.length - 1]?.text || ''
@@ -125,14 +114,14 @@ export default function LearningAssistant() {
     setInput("");
     setLoading(true);
 
-    // Simulate AI response with subject-specific content
+    // Simulate AI response
     await new Promise((resolve) => setTimeout(resolve, 1500));
     
     const aiResponse = {
       id: Date.now() + 1,
-      text: generateAIResponse(newMessage.text, selectedSubject),
+      text: `Hello there! I received your message: "${newMessage.text}". As a general AI assistant, I can help you with a wide range of topics. How can I assist you further?`,
       sender: "ai",
-      subject: selectedSubject
+      subject: "general"
     };
     const finalMessages = [...updatedMessages, aiResponse];
     setMessages(finalMessages);
@@ -144,7 +133,7 @@ export default function LearningAssistant() {
       const newChat = {
         id: currentChatId || Date.now(),
         title: chatTitle,
-        subject: selectedSubject,
+        subject: "general",
         messages: finalMessages,
         timestamp: new Date(),
         lastMessage: aiResponse.text
@@ -160,19 +149,6 @@ export default function LearningAssistant() {
       }
     }, 100);
   };
-
-  const generateAIResponse = (userInput, subject) => {
-    const responses = {
-      general: `I'd be happy to help you with "${userInput}". Let me break this down into key concepts and provide you with a comprehensive explanation.`,
-      programming: `Great question about programming! For "${userInput}", I'll explain the concept, show you code examples, and discuss best practices.`,
-      mathematics: `Let's work through this mathematical concept step by step. For "${userInput}", I'll provide clear explanations and examples.`,
-      science: `Excellent scientific question! Regarding "${userInput}", I'll explain the underlying principles and real-world applications.`,
-      writing: `I'll help you improve your writing skills. For "${userInput}", I'll provide structure, style tips, and examples.`,
-      business: `Let's explore this business concept together. For "${userInput}", I'll discuss strategies, case studies, and practical applications.`
-    };
-    return responses[subject] || responses.general;
-  };
-
 
   const clearConversation = () => {
     setMessages([]);
@@ -250,7 +226,7 @@ export default function LearningAssistant() {
                         chat.subject === 'writing' ? 'bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-300' :
                         'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300'
                       }`}>
-                        {subjects.find(s => s.id === chat.subject)?.label}
+                        {chat.subject}
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -299,7 +275,7 @@ export default function LearningAssistant() {
                   AI Learning Assistant
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {subjects.find(s => s.id === selectedSubject)?.label} Expert
+                  General Expert
                 </p>
               </div>
             </div>
@@ -327,70 +303,20 @@ export default function LearningAssistant() {
         </div>
 
         <div className="flex-1 flex">
-          {/* Left Panel - Subject Selection */}
-          <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">
-            <div className="space-y-4">
-              {/* Subject Selection */}
-              <div>
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
-                  Choose Subject
-                </h3>
-                <div className="space-y-1">
-                  {subjects.map((subject) => {
-                    const Icon = subject.icon;
-                    const isSelected = selectedSubject === subject.id;
-                    
-                    return (
-                      <motion.button
-                        key={subject.id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setSelectedSubject(subject.id)}
-                        className={`w-full p-2 rounded-lg border-2 transition-all duration-300 text-left ${
-                          isSelected 
-                            ? `border-${subject.color}-500 bg-${subject.color}-50 dark:bg-${subject.color}-900/20` 
-                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className={`p-2 rounded-lg ${
-                            isSelected 
-                              ? `bg-${subject.color}-500 text-white` 
-                              : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-                          }`}>
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <span className={`font-medium ${
-                            isSelected 
-                              ? `text-${subject.color}-700 dark:text-${subject.color}-300` 
-                              : "text-gray-700 dark:text-gray-300"
-                          }`}>
-                            {subject.label}
-                          </span>
-                        </div>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </div>
-
-            </div>
-          </div>
-
           {/* Right Panel - Chat Interface */}
           <div className="flex-1 flex flex-col">
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 && (
                 <div className="text-center py-12">
-                  <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center">
+                  <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center shadow-lg">
                     <MessageSquare className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                     Start a conversation
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Ask me anything about {subjects.find(s => s.id === selectedSubject)?.label.toLowerCase()} or any other topic!
+                  <p className="text-gray-600 dark:text-gray-300 max-w-md mx-auto">
+                    Ask me anything about General or any other topic!
                   </p>
                 </div>
               )}
@@ -399,17 +325,17 @@ export default function LearningAssistant() {
           {messages.map((msg) => (
             <motion.div
               key={msg.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                      className={`max-w-[70%] p-4 rounded-2xl shadow-md ${
+                      className={`max-w-[75%] p-4 rounded-3xl shadow-md ${
                         msg.sender === "user"
-                          ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-br-none"
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none"
+                          ? "bg-gradient-to-r from-primary-500 to-purple-600 text-white rounded-br-none" // User bubble color
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none" // AI bubble color
                       }`}
                     >
                       {msg.sender === "ai" && (
@@ -420,7 +346,7 @@ export default function LearningAssistant() {
                           </span>
                         </div>
                       )}
-                      <p className="whitespace-pre-wrap">{msg.text}</p>
+                      <p className="whitespace-pre-wrap text-base leading-relaxed">{msg.text}</p>
               </div>
             </motion.div>
           ))}
@@ -433,7 +359,7 @@ export default function LearningAssistant() {
             transition={{ duration: 0.3 }}
             className="flex justify-start"
           >
-                  <div className="max-w-[70%] p-4 rounded-2xl shadow-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none">
+                  <div className="max-w-[75%] p-4 rounded-3xl shadow-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none">
                     <div className="flex items-center space-x-2 mb-2">
                       <Sparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
                       <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
@@ -463,7 +389,7 @@ export default function LearningAssistant() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
                     placeholder="Ask me anything..."
-                    className="w-full p-4 pr-12 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+                    className="w-full p-4 pr-12 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent shadow-inner"
         />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     <Star className="w-5 h-5 text-gray-400" />
@@ -474,7 +400,7 @@ export default function LearningAssistant() {
           whileTap={{ scale: 0.95 }}
           type="submit"
           disabled={loading || !input.trim()}
-                  className="p-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-4 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Send className="w-5 h-5" />
         </motion.button>

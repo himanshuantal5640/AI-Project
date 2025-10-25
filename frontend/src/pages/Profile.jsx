@@ -14,6 +14,7 @@ export default function Profile({ user, setUser }) {
 
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem('user'); // Remove user from localStorage on logout
     navigate("/");
   };
 

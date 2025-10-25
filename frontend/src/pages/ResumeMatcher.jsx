@@ -14,7 +14,9 @@ import {
   Award,
   Briefcase,
   GraduationCap,
-  Sparkles
+  Sparkles,
+  ThumbsUp,
+  ThumbsDown
 } from "lucide-react";
 
 export default function ResumeMatcher() {
@@ -24,6 +26,14 @@ export default function ResumeMatcher() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("upload");
   const fileInputRef = useRef(null);
+
+  const analysisPrompts = {
+    matchAnalysis: "Analyze the provided resume against the given job description. Calculate a match score (0-100%) and identify key strengths, areas for improvement, relevant keywords found, and crucial missing keywords. Provide actionable suggestions to optimize the resume for this specific job. Your output should be structured to fill the 'analysisResult' state object.",
+    strengths: "Based on the resume and job description, identify the top 3-5 strengths of the candidate. Focus on quantifiable achievements and relevant skills. Format as a bulleted list.",
+    improvements: "Suggest 3-5 specific areas where the resume can be improved to better match the job description. Focus on gaps in skills, experience, or presentation. Format as a bulleted list.",
+    keywordsFound: "Extract all relevant keywords from the resume that are present in the job description. Provide a list of these keywords.",
+    missingKeywords: "Identify any critical keywords from the job description that are conspicuously absent or underrepresented in the resume. Provide a list of these missing keywords."
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -38,7 +48,10 @@ export default function ResumeMatcher() {
     
     setLoading(true);
 
-    // Simulate analysis
+    // In a real application, you would send resumeFile, jobDescription, and analysisPrompts to your AI backend
+    // For now, we'll simulate analysis using the prompts
+    console.log("Simulating analysis with prompts:", analysisPrompts);
+    
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     setAnalysisResult({
@@ -245,16 +258,17 @@ export default function ResumeMatcher() {
 
                     <div className="space-y-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-xl font-bold text-gray-900 dark:text-white mb-3">
                           Job Description
                         </label>
                         <textarea
                           value={jobDescription}
                           onChange={(e) => setJobDescription(e.target.value)}
-                          placeholder="Paste the job description here..."
-                          className="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none"
+                          placeholder="Paste the job description here, including responsibilities, requirements, and desired qualifications..."
+                          rows={10}
+                          className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-y shadow-inner"
                         />
-      </div>
+            </div>
 
                       <motion.button
                         whileHover={{ scale: 1.02 }}
@@ -293,14 +307,14 @@ export default function ResumeMatcher() {
                       </h3>
                       
                       {/* Match Score */}
-                      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
-                        <div className="text-6xl font-bold mb-2">
+                      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-8 text-white transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                        <div className="text-6xl font-extrabold mb-2">
                           {analysisResult.matchScore}%
                         </div>
-                        <p className="text-xl">Match Score</p>
-                        <div className="w-full bg-white/20 rounded-full h-3 mt-4">
+                        <p className="text-xl font-medium">Match Score</p>
+                        <div className="w-full bg-white/30 rounded-full h-3 mt-4">
                           <div 
-                            className="bg-white rounded-full h-3 transition-all duration-1000"
+                            className="bg-white rounded-full h-3 transition-all duration-1000 ease-out"
                             style={{ width: `${analysisResult.matchScore}%` }}
                           />
                         </div>
@@ -309,36 +323,32 @@ export default function ResumeMatcher() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Strengths */}
-                      <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
-                        <div className="flex items-center space-x-2 mb-4">
-                          <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
-                          <h4 className="text-lg font-semibold text-green-800 dark:text-green-200">
-                            Strengths
-                          </h4>
+                      <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800 shadow-lg">
+                        <div className="flex items-center space-x-3 mb-4">
+                          <CheckCircle className="w-7 h-7 text-green-600 dark:text-green-400 flex-shrink-0" />
+                          <h4 className="text-2xl font-bold text-green-800 dark:text-green-200">Strengths</h4>
                         </div>
-                        <ul className="space-y-2">
+                        <ul className="space-y-3">
                           {analysisResult.strengths.map((strength, index) => (
-                            <li key={index} className="flex items-start space-x-2 text-green-700 dark:text-green-300">
-                              <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">{strength}</span>
+                            <li key={index} className="flex items-start space-x-3 text-green-700 dark:text-green-300">
+                              <ThumbsUp className="w-5 h-5 mt-0.5 flex-shrink-0 text-green-500" />
+                              <span className="text-base leading-relaxed">{strength}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
 
                       {/* Improvements */}
-                      <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-6 border border-orange-200 dark:border-orange-800">
-                        <div className="flex items-center space-x-2 mb-4">
-                          <AlertCircle className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                          <h4 className="text-lg font-semibold text-orange-800 dark:text-orange-200">
-                            Areas for Improvement
-                          </h4>
+                      <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-6 border border-orange-200 dark:border-orange-800 shadow-lg">
+                        <div className="flex items-center space-x-3 mb-4">
+                          <AlertCircle className="w-7 h-7 text-orange-600 dark:text-orange-400 flex-shrink-0" />
+                          <h4 className="text-2xl font-bold text-orange-800 dark:text-orange-200">Areas for Improvement</h4>
                         </div>
-                        <ul className="space-y-2">
+                        <ul className="space-y-3">
                           {analysisResult.improvements.map((improvement, index) => (
-                            <li key={index} className="flex items-start space-x-2 text-orange-700 dark:text-orange-300">
-                              <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">{improvement}</span>
+                            <li key={index} className="flex items-start space-x-3 text-orange-700 dark:text-orange-300">
+                              <ThumbsDown className="w-5 h-5 mt-0.5 flex-shrink-0 text-orange-500" />
+                              <span className="text-base leading-relaxed">{improvement}</span>
                             </li>
                           ))}
                         </ul>
@@ -347,43 +357,47 @@ export default function ResumeMatcher() {
 
                     {/* Keywords Analysis */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
-                        <h4 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-4">
-                          Keywords Found
-                        </h4>
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800 shadow-lg">
+                        <div className="flex items-center space-x-3 mb-4">
+                          <Target className="w-7 h-7 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                          <h4 className="text-2xl font-bold text-blue-800 dark:text-blue-200">Keywords Found</h4>
+                        </div>
                         <div className="flex flex-wrap gap-2">
                           {analysisResult.keywords.map((keyword, index) => (
-                            <span key={index} className="px-3 py-1 bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-sm">
+                            <span key={index} className="px-4 py-2 bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-base font-medium hover:bg-blue-300 dark:hover:bg-blue-700 transition-colors cursor-help">
                               {keyword}
                             </span>
                           ))}
                         </div>
                       </div>
 
-                      <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
-                        <h4 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-4">
-                          Missing Keywords
-                        </h4>
+                      <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800 shadow-lg">
+                        <div className="flex items-center space-x-3 mb-4">
+                          <AlertCircle className="w-7 h-7 text-red-600 dark:text-red-400 flex-shrink-0" />
+                          <h4 className="text-2xl font-bold text-red-800 dark:text-red-200">Missing Keywords</h4>
+                        </div>
                         <div className="flex flex-wrap gap-2">
-                          {analysisResult.missingKeywords.map((keyword, index) => (
-                            <span key={index} className="px-3 py-1 bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200 rounded-full text-sm">
-                              {keyword}
-                            </span>
-                          ))}
+                          {analysisResult.missingKeywords.length > 0 ? (
+                            analysisResult.missingKeywords.map((keyword, index) => (
+                              <span key={index} className="px-4 py-2 bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200 rounded-full text-base font-medium hover:bg-red-300 dark:hover:bg-red-700 transition-colors cursor-help">
+                                {keyword}
+                              </span>
+                            ))
+                          ) : (
+                            <p className="text-red-700 dark:text-red-300">No critical missing keywords! Excellent!</p>
+                          )}
                         </div>
                       </div>
                     </div>
 
                     {/* Suggestions */}
-                    <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
-                      <h4 className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-4">
-                        Recommendations
-                      </h4>
-                      <ul className="space-y-3">
+                    <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800 shadow-lg">
+                      <h4 className="text-2xl font-bold text-purple-800 dark:text-purple-200 mb-4">Recommendations</h4>
+                      <ul className="space-y-4">
                         {analysisResult.suggestions.map((suggestion, index) => (
                           <li key={index} className="flex items-start space-x-3 text-purple-700 dark:text-purple-300">
-                            <Award className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm">{suggestion}</span>
+                            <Award className="w-6 h-6 mt-0.5 flex-shrink-0 text-purple-500" />
+                            <span className="text-base leading-relaxed">{suggestion}</span>
                           </li>
                         ))}
                       </ul>
@@ -402,7 +416,7 @@ export default function ResumeMatcher() {
                         </div>
                       </motion.button>
                       
-        <motion.button
+                      <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
@@ -411,13 +425,13 @@ export default function ResumeMatcher() {
                           setAnalysisResult(null);
                           setActiveTab("upload");
                         }}
-                        className="flex-1 bg-gray-600 text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="flex-1 bg-accent-600 text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <div className="flex items-center justify-center space-x-2">
                           <Upload className="w-5 h-5" />
                           <span>Analyze Another</span>
                         </div>
-        </motion.button>
+                      </motion.button>
                     </div>
                   </motion.div>
                 )}

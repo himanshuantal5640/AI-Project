@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ResumeMatcher from "./pages/ResumeMatcher";
@@ -13,7 +12,20 @@ import Dashboard from "./pages/Dashboard"; // Import Dashboard
 import PromptGenerator from "./pages/PromptGenerator"; // Import PromptGenerator
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // Initialize user from localStorage
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
+  // Save user to localStorage whenever it changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
 
   // Protected route wrapper
   const PrivateRoute = ({ children }) => {
